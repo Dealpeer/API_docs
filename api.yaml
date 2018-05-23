@@ -1,0 +1,285 @@
+swagger: '2.0'
+info:
+  description: ''
+  version: 1.0.0
+  title: DealPeer
+  termsOfService: ''
+  contact:
+    email: info@dealpeer.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: api.dealpeer.com
+basePath: /v1
+tags:
+  - name: users
+    description: Operations about user
+schemes:
+  - https
+paths:
+  /users:
+    get:
+      tags:
+        - users
+      summary: Get user list
+      description: Get user list
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: skip
+          type: integer
+        - in: query
+          name: limit
+          type: integer
+          maximum: 100
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              result:
+                type: array
+                items:
+                  $ref: '#/definitions/User'
+  '/users/{id}':
+    get:
+      tags:
+        - users
+      summary: Get user
+      description: Get user
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: User id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                $ref: '#/definitions/User'
+  /categories:
+    get:
+      tags:
+        - categories
+      summary: Get category list
+      description: Get category list
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: parent_id
+          type: string
+          description: Use for get child categories
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              result:
+                type: array
+                items:
+                  $ref: '#/definitions/Category'
+  '/categories/{id}/filters':
+    get:
+      tags:
+        - categories
+      summary: Get category filter list
+      description: Get category filter list
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: Category id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              result:
+                type: array
+                items:
+                  $ref: '#/definitions/Filter'
+  /offertypes:
+    get:
+      tags:
+        - offertypes
+      summary: Get category filter list
+      description: Get category filter list
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              result:
+                type: array
+                items:
+                  $ref: '#/definitions/OfferType'
+  /offers:
+    post:
+      tags:
+        - users
+      summary: Search offers
+      description: Search offers
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Use search params for get offer list
+          schema:
+            $ref: '#/definitions/SearchRequest'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              result:
+                type: array
+                items:
+                  $ref: '#/definitions/Offer'
+definitions:
+  SearchRequest:
+    type: object
+    properties:
+      query:
+        type: string
+        description: "Search text"
+      query_language:
+        type: string
+        description: "Language for search text"
+        enum:
+        - "english"
+        - "russian"
+      category:
+        type: "string"
+      filters:
+        type: "object"
+        description: "Object of filters. Used if category value is setted"
+      offer_type:
+        type: "string"
+        description: "Type of offer"
+      skip:
+        type: "integer"
+      limit: 
+        type: "integer"
+        maximum: 100
+      
+  Lang:
+    type: object
+    properties:
+      language:
+        type: string
+        enum:
+          - english
+          - russian
+      text:
+        type: string
+  Offer:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: array
+        items:
+          $ref: '#/definitions/Lang'
+      desc:
+        type: array
+        items:
+          $ref: '#/definitions/Lang'
+      category:
+        type: string
+      offer_type:
+        type: string
+        enum:
+          - sale
+      properties:
+        type: object
+  OfferType:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: array
+        items:
+          $ref: '#/definitions/Lang'
+  Filter:
+    type: object
+    properties:
+      id:
+        type: string
+      lang_code:
+        type: string
+      name:
+        type: array
+        items:
+          $ref: '#/definitions/Lang'
+      values:
+        type: array
+        items:
+          - type: string
+          - type: integer
+  Category:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: array
+        items:
+          $ref: '#/definitions/Lang'
+  User:
+    type: object
+    properties:
+      id:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      avatat:
+        type: string
+      description:
+        type: string
+      oauth:
+        type: array
+        items:
+          $ref: '#/definitions/OAuth'
+  OAuth:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+          - facebbook
+          - google
+  Error:
+    type: object
+    properties:
+      error_code:
+        type: integer
+      error_message:
+        type: string
