@@ -102,6 +102,36 @@ paths:
               result:
                 type: object
                 $ref: '#/definitions/User'
+  '/users/{id}/offers':
+    get:
+      tags:
+        - users
+      summary: Get user offer list
+      description: Get user offer list
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: User id
+          required: true
+          type: string
+        - in: query
+          name: skip
+          type: integer
+        - in: query
+          name: limit
+          type: integer
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              result:
+                type: array
+                items:
+                  $ref: '#/definitions/Offer'
   /categories:
     get:
       tags:
