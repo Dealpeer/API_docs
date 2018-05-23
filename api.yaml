@@ -17,6 +17,42 @@ tags:
 schemes:
   - https
 paths:
+  '/oauth/{tenant}':
+    post:
+      summary: Signin/signup
+      description: Signin/signup
+      tags:
+        - auth
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: tenant
+          type: string
+          required: true
+          enum:
+            - google
+            - facebook
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              access_token:
+                type: string
+                description: Facebook or google access_token
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: Use access_token to access private api
   /users:
     get:
       tags:
@@ -161,27 +197,26 @@ definitions:
     properties:
       query:
         type: string
-        description: "Search text"
+        description: Search text
       query_language:
         type: string
-        description: "Language for search text"
+        description: Language for search text
         enum:
-        - "english"
-        - "russian"
+          - english
+          - russian
       category:
-        type: "string"
+        type: string
       filters:
-        type: "object"
-        description: "Object of filters. Used if category value is setted"
+        type: object
+        description: Object of filters. Used if category value is setted
       offer_type:
-        type: "string"
-        description: "Type of offer"
+        type: string
+        description: Type of offer
       skip:
-        type: "integer"
-      limit: 
-        type: "integer"
+        type: integer
+      limit:
+        type: integer
         maximum: 100
-      
   Lang:
     type: object
     properties:
@@ -216,8 +251,11 @@ definitions:
   OfferType:
     type: object
     properties:
-      id:
+      code:
         type: string
+        enum:
+          - rent
+          - sale
       name:
         type: array
         items:
