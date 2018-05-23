@@ -287,6 +287,8 @@ definitions:
         type: string
         enum:
           - sale
+      user_id:
+        type: string
       properties:
         type: object
       coords:
