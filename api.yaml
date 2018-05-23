@@ -200,7 +200,7 @@ paths:
   /offers:
     post:
       tags:
-        - users
+        - offers
       summary: Search offers
       description: Search offers
       produces:
@@ -211,6 +211,30 @@ paths:
           description: Use search params for get offer list
           schema:
             $ref: '#/definitions/SearchRequest'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              result:
+                type: array
+                items:
+                  $ref: '#/definitions/Offer'
+  '/offer/{id}':
+    get:
+      tags:
+        - offers
+      summary: Get offer
+      description: Get offer
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: Category id
+          required: true
+          type: string
       responses:
         '200':
           description: successful operation
