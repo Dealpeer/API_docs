@@ -197,7 +197,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/OfferType'
-  /offers:
+  /offers/search:
     post:
       tags:
         - offers
