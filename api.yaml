@@ -78,7 +78,18 @@ paths:
               result:
                 type: array
                 items:
-                  $ref: '#/definitions/User'
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    firstName:
+                      type: string
+                    lastName:
+                      type: string
+                    company:
+                      type: string
+                    avatar:
+                      type: string
   '/users/{id}':
     get:
       tags:
@@ -101,7 +112,22 @@ paths:
             properties:
               result:
                 type: object
-                $ref: '#/definitions/User'
+                properties:
+                  id:
+                    type: string
+                  email:
+                    type: string
+                    description: Returned if request by current user
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  company:
+                    type: string
+                  avatar:
+                    type: string
+                  description:
+                    type: string
   '/users/{id}/offers':
     get:
       tags:
@@ -131,7 +157,26 @@ paths:
               result:
                 type: array
                 items:
-                  $ref: '#/definitions/Offer'
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: array
+                      items:
+                        $ref: '#/definitions/Lang'
+                    properties:
+                      type: object
+                    price:
+                      type: integer
+                      format: float
+                    state:
+                      type: integer
+                      format: number
+                    images:
+                      type: array
+                      items:
+                        type: string
   /categories:
     get:
       tags:
@@ -179,24 +224,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/Filter'
-  /offertypes:
-    get:
-      tags:
-        - offertypes
-      summary: Get category filter list
-      description: Get category filter list
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: successful operation
-          schema:
-            type: object
-            properties:
-              result:
-                type: array
-                items:
-                  $ref: '#/definitions/OfferType'
   /offers/search:
     post:
       tags:
@@ -220,8 +247,74 @@ paths:
               result:
                 type: array
                 items:
-                  $ref: '#/definitions/Offer'
-  '/offer/{id}':
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: array
+                      items:
+                        $ref: '#/definitions/Lang'
+                    properties:
+                      type: object
+                    coords:
+                      type: array
+                      maxLength: 2
+                      minLength: 2
+                      items:
+                        type: number
+                        format: float
+                    price:
+                      type: integer
+                      format: float
+  /offers:
+    post:
+      summary: Create offer
+      description: Create offer
+      tags:
+        - offers
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: array
+                items:
+                  $ref: '#/definitions/Lang'
+              desc:
+                type: array
+                items:
+                  $ref: '#/definitions/Lang'
+              category:
+                type: string
+              properties:
+                type: object
+              coords:
+                type: array
+                maxLength: 2
+                minLength: 2
+                items:
+                  type: number
+                  format: float
+              price:
+                type: integer
+                format: float
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  id:
+                    type: string
+  '/offers/{id}':
     get:
       tags:
         - offers
@@ -232,7 +325,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Category id
+          description: Offer id
           required: true
           type: string
       responses:
@@ -242,9 +335,118 @@ paths:
             type: object
             properties:
               result:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Lang'
+                  desc:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Lang'
+                  category:
+                    type: string
+                  userId:
+                    type: string
+                  properties:
+                    type: object
+                  images:
+                    type: array
+                    items:
+                      type: string
+                  state:
+                    type: integer
+                    format: number
+                  coords:
+                    type: array
+                    maxLength: 2
+                    minLength: 2
+                    items:
+                      type: number
+                      format: float
+                  price:
+                    type: integer
+                    format: float
+    post:
+      summary: Update offer
+      description: Update offer
+      tags:
+        - offers
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: Offer id
+          required: true
+          type: string
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              name:
                 type: array
                 items:
-                  $ref: '#/definitions/Offer'
+                  $ref: '#/definitions/Lang'
+              desc:
+                type: array
+                items:
+                  $ref: '#/definitions/Lang'
+              properties:
+                type: object
+              coords:
+                type: array
+                maxLength: 2
+                minLength: 2
+                items:
+                  type: number
+                  format: float
+              price:
+                type: integer
+                format: float
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              result:
+                type: boolean
+  '/offers/{id}/state/{state}':
+    post:
+      summary: Update offer
+      description: Update offer
+      tags:
+        - offers
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: Offer id
+          required: true
+          type: string
+        - name: state
+          in: path
+          description: Offer state
+          enum:
+            - publish
+            - moderate
+            - archive
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              result:
+                type: boolean
 definitions:
   SearchRequest:
     type: object
@@ -263,9 +465,6 @@ definitions:
       filters:
         type: object
         description: Object of filters. Used if category value is setted
-      offer_type:
-        type: string
-        description: Type of offer
       box:
         type: array
         maxItems: 2
@@ -307,11 +506,7 @@ definitions:
           $ref: '#/definitions/Lang'
       category:
         type: string
-      offer_type:
-        type: string
-        enum:
-          - sale
-      user_id:
+      userId:
         type: string
       properties:
         type: object
@@ -322,18 +517,6 @@ definitions:
         items:
           type: number
           format: float
-  OfferType:
-    type: object
-    properties:
-      code:
-        type: string
-        enum:
-          - rent
-          - sale
-      name:
-        type: array
-        items:
-          $ref: '#/definitions/Lang'
   Filter:
     type: object
     properties:
@@ -341,6 +524,10 @@ definitions:
         type: string
       lang_code:
         type: string
+      type:
+        type: string
+        enum:
+          - string
       name:
         type: array
         items:
@@ -359,35 +546,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Lang'
-  User:
-    type: object
-    properties:
-      id:
-        type: string
-      email:
-        type: string
-      first_name:
-        type: string
-      last_name:
-        type: string
-      avatat:
-        type: string
-      description:
-        type: string
-      oauth:
-        type: array
-        items:
-          $ref: '#/definitions/OAuth'
-  OAuth:
-    type: object
-    properties:
-      id:
-        type: string
-      type:
-        type: string
-        enum:
-          - facebbook
-          - google
   Error:
     type: object
     properties:
