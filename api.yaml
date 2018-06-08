@@ -16,6 +16,11 @@ tags:
     description: Operations about user
 schemes:
   - https
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
 paths:
   '/oauth/{tenant}':
     post:
@@ -92,6 +97,8 @@ paths:
                       type: string
   '/users/{id}':
     get:
+      security:
+        - Bearer: []
       tags:
         - users
       summary: Get user
@@ -130,6 +137,8 @@ paths:
                     type: string
   '/users/{id}/offers':
     get:
+      security:
+        - Bearer: []
       tags:
         - users
       summary: Get user offer list
@@ -269,6 +278,8 @@ paths:
                       format: float
   /offers:
     post:
+      security:
+        - Bearer: []
       summary: Create offer
       description: Create offer
       tags:
@@ -371,6 +382,8 @@ paths:
                     type: integer
                     format: float
     post:
+      security:
+        - Bearer: []
       summary: Update offer
       description: Update offer
       tags:
@@ -418,6 +431,8 @@ paths:
                 type: boolean
   '/offers/{id}/state/{state}':
     post:
+      security:
+        - Bearer: []
       summary: Update offer
       description: Update offer
       tags:
